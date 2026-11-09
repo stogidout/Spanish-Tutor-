@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spanish Practice: Days, Months &amp; Dates</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #ffffff;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --faint: #78716c;
+      --line: #e7e5e4;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --ok: #15803d;
+      --ok-soft: #dcfce7;
+      --warn: #a16207;
+      --warn-soft: #fef3c7;
+      --bad: #b91c1c;
+      --bad-soft: #fee2e2;
+      --shadow: 0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 24px rgba(28, 25, 23, 0.06);
+      --radius: 16px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #d1fae5 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #fde68a 0%, transparent 50%),
+        var(--bg);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 20px 16px 64px;
+    }
+    header.hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    header.hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.45rem, 4vw, 1.9rem);
+      letter-spacing: -0.02em;
+    }
+    header.hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: #115e59;
+      font-size: 0.92rem;
+      border: 1px solid #99f6e4;
+    }
+    nav.tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 8px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(247, 244, 239, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 8px 0;
+    }
+    nav.tabs button {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    nav.tabs button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    section.panel {
+      display: none;
+      margin-top: 8px;
+    }
+    section.panel.active { display: block; }
+    h2 {
+      margin: 8px 0 12px;
+      font-size: 1.25rem;
+    }
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 1.05rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+    }
+    .rules ul { margin: 8px 0 0; padding-left: 1.2rem; }
+    .rules li { margin: 6px 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .phrase {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: var(--shadow);
+    }
+    .phrase .es {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .phrase .en { color: var(--muted); font-size: 0.95rem; }
+    .phrase .say { color: var(--faint); font-size: 0.85rem; }
+    .phrase .actions { margin-top: 8px; }
+    .seg {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .seg button, .btn {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .seg button.active, .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .btn.ghost {
+      background: transparent;
+    }
+    table.nums {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+    }
+    table.nums th, table.nums td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+    table.nums th {
+      background: #f5f5f4;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    table.nums tr:last-child td { border-bottom: none; }
+    .quiz-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .prompt {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    label.field {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      font: inherit;
+      font-size: 1rem;
+      background: #fff;
+    }
+    input[type="text"]:focus {
+      outline: 2px solid #5eead4;
+      border-color: var(--accent);
+    }
+    .status {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .status.ok { background: var(--ok-soft); color: var(--ok); }
+    .status.warn { background: var(--warn-soft); color: var(--warn); }
+    .status.bad { background: var(--bad-soft); color: var(--bad); }
+    .status.info { background: #e0f2fe; color: #075985; }
+    .heard { color: var(--muted); font-size: 0.92rem; margin-top: 8px; }
+    .tip { color: var(--faint); font-size: 0.85rem; margin-top: 10px; }
+    footer {
+      margin-top: 28px;
+      color: var(--faint);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    @media (max-width: 520px) {
+      .wrap { padding: 14px 12px 48px; }
+      .phrase .es { font-size: 1.05rem; }
+      .prompt { font-size: 1.08rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>Spanish Practice: Days, Months &amp; Dates</h1>
+      <p>7th-grade practice — listen, speak, or type. Encouraging and school-friendly.</p>
+      <div class="note">
+        <strong>Works best in Chrome.</strong>
+        Voice answers need a microphone permission prompt and an internet connection
+        (Chrome’s speech recognition uses Google’s servers). Listen uses your device’s Spanish voice and works offline once voices are available.
+      </div>
+    </header>
+
+    <nav class="tabs" id="mainTabs" aria-label="Sections">
+      <button type="button" class="active" data-panel="learn">Learn</button>
+      <button type="button" data-panel="rules">Key rules</button>
+      <button type="button" data-panel="numbers">Numbers 1–31</button>
+      <button type="button" data-panel="quiz">Practice quiz</button>
+    </nav>
+
+    <section class="panel active" id="panel-learn">
+      <h2>Learn: days, months, and phrases</h2>
+      <p style="color:var(--muted);margin-top:0">Tap Listen on any card, then say it back out loud.</p>
+      <div class="seg" id="learnSeg">
+        <button type="button" class="active" data-set="days">Days</button>
+        <button type="button" data-set="months">Months</button>
+        <button type="button" data-set="qa">Ask &amp; answer</button>
+      </div>
+      <div class="grid" id="learnGrid"></div>
+    </section>
+
+    <section class="panel" id="panel-rules">
+      <h2>Key rules</h2>
+      <div class="card rules">
+        <ul>
+          <li>Days and months are <strong>not capitalized</strong> in Spanish.</li>
+          <li>The week starts on <strong>Monday</strong> (lunes).</li>
+          <li>Dates go <strong>day before month</strong>: <em>el 5 de noviembre</em>.</li>
+          <li>The 1st is <strong>el primero</strong> (not el uno).</li>
+          <li><strong>el lunes</strong> = on Monday; <strong>los lunes</strong> = on Mondays.</li>
+        </ul>
+        <h3>How to say a date</h3>
+        <ol>
+          <li>Start with <em>Hoy es el</em> (“Today is the…”)</li>
+          <li>Add the number — <em>primero</em> for the 1st; otherwise the plain number</li>
+          <li>Add <em>de</em> + the month → <em>Hoy es el veinte de abril.</em></li>
+        </ol>
+        <h3>Tricky sounds</h3>
+        <ul>
+          <li><strong>j</strong> sounds like English <em>h</em>: junio (HOO-nyoh), julio (HOO-lyoh), jueves (HWEH-vehs).</li>
+          <li>Accent marks show stress: miércoles, sábado.</li>
+          <li><strong>ñ</strong> sounds like <em>ny</em>: mañana, cumpleaños. <strong>ll</strong> is often like English <em>y</em>.</li>
+        </ul>
+        <div class="row">
+          <button type="button" class="btn" data-speak="el cinco de noviembre">Listen: el cinco de noviembre</button>
+          <button type="button" class="btn" data-speak="el primero de mayo">Listen: el primero de mayo</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-numbers">
+      <h2>Numbers for dates (1–31)</h2>
+      <table class="nums">
+        <thead>
+          <tr><th>1–10</th><th>11–20</th><th>21–31</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 primero</td><td>11 once</td><td>21 veintiuno</td></tr>
+          <tr><td>2 dos</td><td>12 doce</td><td>22 veintidós</td></tr>
+          <tr><td>3 tres</td><td>13 trece</td><td>23 veintitrés</td></tr>
+          <tr><td>4 cuatro</td><td>14 catorce</td><td>24 veinticuatro</td></tr>
+          <tr><td>5 cinco</td><td>15 quince</td><td>25 veinticinco</td></tr>
+          <tr><td>6 seis</td><td>16 dieciséis</td><td>26 veintiséis</td></tr>
+          <tr><td>7 siete</td><td>17 diecisiete</td><td>27 veintisiete</td></tr>
+          <tr><td>8 ocho</td><td>18 dieciocho</td><td>28 veintiocho</td></tr>
+          <tr><td>9 nueve</td><td>19 diecinueve</td><td>29 veintinueve</td></tr>
+          <tr><td>10 diez</td><td>20 veinte</td><td>30 treinta · 31 treinta y uno</td></tr>
+        </tbody>
+      </table>
+      <div class="row" style="margin-top:12px">
+        <button type="button" class="btn" data-speak="primero">Listen: primero</button>
+        <button type="button" class="btn" data-speak="quince">Listen: quince</button>
+        <button type="button" class="btn" data-speak="veinte">Listen: veinte</button>
+        <button type="button" class="btn" data-speak="treinta y uno">Listen: treinta y uno</button>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-quiz">
+      <h2>Practice quiz</h2>
+      <p style="color:var(--muted);margin-top:0">One question at a time. Use Say it or type — then Next.</p>
+      <div class="quiz-meta">
+        <span id="quizProgress">Question 1 of 0</span>
+        <span id="quizScore">Score 0/0</span>
+      </div>
+      <div class="card" id="quizCard">
+        <p class="prompt" id="quizPrompt"></p>
+        <div class="row" id="quizListenRow"></div>
+        <div class="row">
+          <button type="button" class="btn primary" id="sayBtn">Say it</button>
+          <button type="button" class="btn" id="checkBtn">Check typed answer</button>
+          <button type="button" class="btn" id="hearCorrectBtn" hidden>Hear correct answer</button>
+          <button type="button" class="btn ghost" id="tryAgainBtn" hidden>Try again</button>
+        </div>
+        <label class="field" for="answerInput">Or type your answer
+          <input type="text" id="answerInput" autocomplete="off" placeholder="Type in Spanish or English…" />
+        </label>
+        <div class="heard" id="heardLine" hidden></div>
+        <div class="status info" id="quizStatus" hidden></div>
+        <p class="tip">Tip: accents and ¿? are optional when you type. For the 1st of the month, use <em>primero</em>.</p>
+        <div class="row" style="margin-top:14px">
+          <button type="button" class="btn primary" id="nextBtn" disabled>Next</button>
+          <button type="button" class="btn ghost" id="restartBtn" hidden>Practice again</button>
+        </div>
+      </div>
+      <div class="card" id="quizDone" hidden>
+        <p id="quizDoneMsg" style="margin:0;font-size:1.1rem;font-weight:700"></p>
+        <div class="row" style="margin-top:12px">
+          <button type="button" class="btn primary" id="restartBtn2">Practice again</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>Open this file in Chrome for the best speaking practice. No account needed.</footer>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  var DAYS = [
+    { es: "lunes", en: "Monday", say: "LOO-nehs" },
+    { es: "martes", en: "Tuesday", say: "MAR-tehs" },
+    { es: "miércoles", en: "Wednesday", say: "mee-EHR-koh-lehs" },
+    { es: "jueves", en: "Thursday", say: "HWEH-vehs" },
+    { es: "viernes", en: "Friday", say: "vee-EHR-nehs" },
+    { es: "sábado", en: "Saturday", say: "SAH-bah-doh" },
+    { es: "domingo", en: "Sunday", say: "doh-MEEN-goh" }
+  ];
+
+  var MONTHS = [
+    { es: "enero", en: "January", say: "eh-NEH-roh" },
+    { es: "febrero", en: "February", say: "feh-BREH-roh" },
+    { es: "marzo", en: "March", say: "MAR-soh" },
+    { es: "abril", en: "April", say: "ah-BREEL" },
+    { es: "mayo", en: "May", say: "MAH-yoh" },
+    { es: "junio", en: "June", say: "HOO-nyoh" },
+    { es: "julio", en: "July", say: "HOO-lyoh" },
+    { es: "agosto", en: "August", say: "ah-GOHS-toh" },
+    { es: "septiembre", en: "September", say: "sehp-tee-EHM-breh" },
+    { es: "octubre", en: "October", say: "ohk-TOO-breh" },
+    { es: "noviembre", en: "November", say: "noh-vee-EHM-breh" },
+    { es: "diciembre", en: "December", say: "dee-see-EHM-breh" }
+  ];
+
+  var QA = [
+    { es: "¿Qué día es hoy?", en: "What day is today?", say: "keh DEE-ah ehs oy" },
+    { es: "Hoy es lunes.", en: "Today is Monday.", say: "oy ehs LOO-nehs" },
+    { es: "¿Cuál es la fecha de hoy?", en: "What is today's date?", say: "kwahl ehs lah FEH-chah deh oy" },
+    { es: "Hoy es el cinco de noviembre.", en: "Today is November 5th.", say: "oy ehs ehl SEEN-koh deh noh-vee-EHM-breh" },
+    { es: "Hoy es el primero de mayo.", en: "Today is May 1st.", say: "oy ehs ehl pree-MEH-roh deh MAH-yoh" },
+    { es: "¿En qué mes estamos?", en: "What month is it?", say: "ehn keh mehs ehs-TAH-mohs" },
+    { es: "Estamos en noviembre.", en: "We are in November.", say: "ehs-TAH-mohs ehn noh-vee-EHM-breh" },
+    { es: "¿Cuándo es tu cumpleaños?", en: "When is your birthday?", say: "KWAHN-doh ehs too koom-pleh-AHN-yohs" },
+    { es: "Mi cumpleaños es el doce de julio.", en: "My birthday is July 12th.", say: "mee koom-pleh-AHN-yohs ehs ehl DOH-seh deh HOO-lyoh" }
+  ];
+
+  function clean(s) {
+    return String(s || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[¿?¡!.,;:"']/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function levenshtein(a, b) {
+    var m = a.length;
+    var n = b.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    var prev = new Array(n + 1);
+    var curr = new Array(n + 1);
+    var i, j, cost;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      curr[0] = i;
+      for (j = 1; j <= n; j++) {
+        cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+        curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+      }
+      for (j = 0; j <= n; j++) prev[j] = curr[j];
+    }
+    return prev[n];
+  }
+
+  function similarity(a, b) {
+    var A = clean(a);
+    var B = clean(b);
+    if (A === B) return 1;
+    var maxLen = Math.max(A.length, B.length);
+    if (maxLen === 0) return 1;
+    return 1 - levenshtein(A, B) / maxLen;
+  }
+
+  function rejectsUnoForPrimero(expected, heard) {
+    var e = clean(expected);
+    var h = clean(heard);
+    return e.indexOf("primero") >= 0 && h.indexOf("uno") >= 0 && h.indexOf("primero") < 0;
+  }
+
+  function isMatch(expected, heard, accept) {
+    if (rejectsUnoForPrimero(expected, heard)) return false;
+    var targets = [expected].concat(accept || []);
+    var i;
+    for (i = 0; i < targets.length; i++) {
+      if (similarity(targets[i], heard) >= 0.82) return true;
+    }
+    return false;
+  }
+
+  function speakSpanish(text) {
+    if (!window.speechSynthesis) {
+      alert("This browser cannot speak words aloud. Try Chrome.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "es-ES";
+    u.rate = 0.85;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var spanish = null;
+    var i;
+    for (i = 0; i < voices.length; i++) {
+      if (String(voices[i].lang).toLowerCase().indexOf("es") === 0) {
+        spanish = voices[i];
+        break;
+      }
+    }
+    if (spanish) {
+      u.voice = spanish;
+      u.lang = spanish.lang;
+    }
+    window.speechSynthesis.speak(u);
+  }
+
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = function () {};
+    window.speechSynthesis.getVoices();
+  }
+
+  function shuffle(items) {
+    var arr = items.slice();
+    var i, j, tmp;
+    for (i = arr.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function buildQuiz() {
+    return [
+      { kind: "en2es", prompt: "How do you say Monday in Spanish?", answer: "lunes", speakAnswer: "lunes" },
+      { kind: "en2es", prompt: "How do you say Wednesday in Spanish?", answer: "miércoles", speakAnswer: "miércoles" },
+      { kind: "en2es", prompt: "How do you say Friday in Spanish?", answer: "viernes", speakAnswer: "viernes" },
+      { kind: "en2es", prompt: "How do you say Sunday in Spanish?", answer: "domingo", speakAnswer: "domingo" },
+      { kind: "en2es", prompt: "How do you say June in Spanish?", answer: "junio", speakAnswer: "junio" },
+      { kind: "en2es", prompt: "How do you say July in Spanish?", answer: "julio", speakAnswer: "julio" },
+      { kind: "en2es", prompt: "How do you say November in Spanish?", answer: "noviembre", speakAnswer: "noviembre" },
+      { kind: "en2es", prompt: "How do you say December in Spanish?", answer: "diciembre", speakAnswer: "diciembre" },
+      { kind: "es2en", prompt: "What does «martes» mean in English?", answer: "Tuesday", speakPrompt: "martes" },
+      { kind: "es2en", prompt: "What does «jueves» mean in English?", answer: "Thursday", speakPrompt: "jueves" },
+      { kind: "es2en", prompt: "What does «sábado» mean in English?", answer: "Saturday", speakPrompt: "sábado" },
+      { kind: "es2en", prompt: "What does «enero» mean in English?", answer: "January", speakPrompt: "enero" },
+      { kind: "es2en", prompt: "What does «agosto» mean in English?", answer: "August", speakPrompt: "agosto" },
+      { kind: "es2en", prompt: "What does «octubre» mean in English?", answer: "October", speakPrompt: "octubre" },
+      { kind: "fill", prompt: "Fill in: Hoy es ___ (Monday).", answer: "lunes", accept: ["Hoy es lunes", "Hoy es lunes."], speakAnswer: "lunes" },
+      { kind: "fill", prompt: "Fill in the date: March 15 → el ___ de marzo", answer: "quince", accept: ["el quince de marzo", "quince de marzo"], speakAnswer: "el quince de marzo" },
+      { kind: "fill", prompt: "Fill in the 1st: October 1 → el ___ de octubre", answer: "primero", accept: ["el primero de octubre", "primero de octubre"], speakAnswer: "el primero de octubre", why: "For the 1st of the month we say el primero, not el uno." },
+      { kind: "fill", prompt: "Fill in: Estamos en ___ (November).", answer: "noviembre", accept: ["Estamos en noviembre"], speakAnswer: "noviembre" },
+      { kind: "repeat", prompt: "Listen, then say: miércoles", answer: "miércoles", speakPrompt: "miércoles", speakAnswer: "miércoles" },
+      { kind: "repeat", prompt: "Listen, then say: junio", answer: "junio", speakPrompt: "junio", speakAnswer: "junio" },
+      { kind: "repeat", prompt: "Listen, then say: julio", answer: "julio", speakPrompt: "julio", speakAnswer: "julio" },
+      { kind: "repeat", prompt: "Listen, then say: cumpleaños", answer: "cumpleaños", speakPrompt: "cumpleaños", speakAnswer: "cumpleaños" },
+      { kind: "qa", prompt: "Ask in Spanish: What day is today?", answer: "¿Qué día es hoy?", accept: ["Que dia es hoy", "Qué día es hoy"], speakAnswer: "¿Qué día es hoy?" },
+      { kind: "qa", prompt: "Answer: Today is Friday.", answer: "Hoy es viernes.", accept: ["Hoy es viernes"], speakAnswer: "Hoy es viernes." },
+      { kind: "qa", prompt: "Ask in Spanish: What is today's date?", answer: "¿Cuál es la fecha de hoy?", accept: ["Cual es la fecha de hoy", "Cuál es la fecha de hoy"], speakAnswer: "¿Cuál es la fecha de hoy?" },
+      { kind: "qa", prompt: "Say the date: November 5th.", answer: "el cinco de noviembre", accept: ["Hoy es el cinco de noviembre", "cinco de noviembre"], speakAnswer: "el cinco de noviembre" },
+      { kind: "qa", prompt: "Say the date: May 1st.", answer: "el primero de mayo", accept: ["Hoy es el primero de mayo", "primero de mayo"], speakAnswer: "el primero de mayo", why: "Remember: the 1st is el primero, not el uno." },
+      { kind: "qa", prompt: "Ask in Spanish: What month is it?", answer: "¿En qué mes estamos?", accept: ["En que mes estamos", "En qué mes estamos"], speakAnswer: "¿En qué mes estamos?" },
+      { kind: "qa", prompt: "Answer: We are in December. / It's December.", answer: "Estamos en diciembre.", accept: ["Estamos en diciembre"], speakAnswer: "Estamos en diciembre." },
+      { kind: "qa", prompt: "Ask in Spanish: When is your birthday?", answer: "¿Cuándo es tu cumpleaños?", accept: ["Cuando es tu cumpleaños", "Cuándo es tu cumpleaños"], speakAnswer: "¿Cuándo es tu cumpleaños?" },
+      { kind: "qa", prompt: "Answer: My birthday is June 3rd.", answer: "Mi cumpleaños es el tres de junio.", accept: ["Mi cumpleaños es el tres de junio", "el tres de junio"], speakAnswer: "Mi cumpleaños es el tres de junio." },
+      { kind: "en2es", prompt: "What does «los sábados» mean? (hint: every…)", answer: "on Saturdays", accept: ["every Saturday", "on Saturdays every Saturday", "Saturdays"] },
+      { kind: "en2es", prompt: "How do you say Tuesday in Spanish?", answer: "martes", speakAnswer: "martes" },
+      { kind: "en2es", prompt: "How do you say Thursday in Spanish?", answer: "jueves", speakAnswer: "jueves" },
+      { kind: "fill", prompt: "Fill in: el lunes = on Monday; ___ lunes = on Mondays", answer: "los", accept: ["los lunes"], speakAnswer: "los lunes", why: "el lunes = on Monday (one day). los lunes = on Mondays (every Monday)." },
+      { kind: "repeat", prompt: "Listen, then say: ¿Qué día es hoy?", answer: "¿Qué día es hoy?", accept: ["Que dia es hoy"], speakPrompt: "¿Qué día es hoy?", speakAnswer: "¿Qué día es hoy?" },
+      { kind: "qa", prompt: "Say the date: April 20th.", answer: "el veinte de abril", accept: ["Hoy es el veinte de abril", "veinte de abril"], speakAnswer: "el veinte de abril" },
+      { kind: "es2en", prompt: "What does «febrero» mean in English?", answer: "February", speakPrompt: "febrero" }
+    ];
+  }
+
+  /* Tabs */
+  var mainTabs = document.getElementById("mainTabs");
+  mainTabs.addEventListener("click", function (ev) {
+    var btn = ev.target;
+    if (!btn || !btn.getAttribute("data-panel")) return;
+    var panel = btn.getAttribute("data-panel");
+    var buttons = mainTabs.querySelectorAll("button");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      buttons[i].classList.toggle("active", buttons[i] === btn);
+    }
+    var panels = ["learn", "rules", "numbers", "quiz"];
+    for (i = 0; i < panels.length; i++) {
+      document.getElementById("panel-" + panels[i]).classList.toggle("active", panels[i] === panel);
+    }
+  });
+
+  /* Learn cards */
+  var learnGrid = document.getElementById("learnGrid");
+  var learnSeg = document.getElementById("learnSeg");
+  var currentSet = "days";
+
+  function renderLearn() {
+    var list = currentSet === "days" ? DAYS : currentSet === "months" ? MONTHS : QA;
+    learnGrid.innerHTML = "";
+    var i;
+    for (i = 0; i < list.length; i++) {
+      (function (item) {
+        var card = document.createElement("div");
+        card.className = "phrase";
+        card.innerHTML =
+          '<div class="es"></div>' +
+          '<div class="en"></div>' +
+          '<div class="say"></div>' +
+          '<div class="actions"><button type="button" class="btn">Listen</button></div>';
+        card.querySelector(".es").textContent = item.es;
+        card.querySelector(".en").textContent = item.en;
+        card.querySelector(".say").textContent = "Sounds like: " + item.say;
+        card.querySelector("button").addEventListener("click", function () {
+          speakSpanish(item.es);
+        });
+        learnGrid.appendChild(card);
+      })(list[i]);
+    }
+  }
+
+  learnSeg.addEventListener("click", function (ev) {
+    var btn = ev.target;
+    if (!btn || !btn.getAttribute("data-set")) return;
+    currentSet = btn.getAttribute("data-set");
+    var buttons = learnSeg.querySelectorAll("button");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      buttons[i].classList.toggle("active", buttons[i] === btn);
+    }
+    renderLearn();
+  });
+  renderLearn();
+
+  /* Global data-speak buttons */
+  document.body.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (!t || !t.getAttribute) return;
+    var speak = t.getAttribute("data-speak");
+    if (speak) speakSpanish(speak);
+  });
+
+  /* Quiz state */
+  var deck = shuffle(buildQuiz());
+  var idx = 0;
+  var score = 0;
+  var attempted = 0;
+  var scoredThis = false;
+  var listening = false;
+  var activeRec = null;
+
+  var quizPrompt = document.getElementById("quizPrompt");
+  var quizListenRow = document.getElementById("quizListenRow");
+  var quizProgress = document.getElementById("quizProgress");
+  var quizScore = document.getElementById("quizScore");
+  var sayBtn = document.getElementById("sayBtn");
+  var checkBtn = document.getElementById("checkBtn");
+  var hearCorrectBtn = document.getElementById("hearCorrectBtn");
+  var tryAgainBtn = document.getElementById("tryAgainBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var restartBtn = document.getElementById("restartBtn");
+  var restartBtn2 = document.getElementById("restartBtn2");
+  var answerInput = document.getElementById("answerInput");
+  var heardLine = document.getElementById("heardLine");
+  var quizStatus = document.getElementById("quizStatus");
+  var quizCard = document.getElementById("quizCard");
+  var quizDone = document.getElementById("quizDone");
+  var quizDoneMsg = document.getElementById("quizDoneMsg");
+
+  function currentItem() {
+    return deck[Math.min(idx, deck.length - 1)];
+  }
+
+  function setStatus(kind, text) {
+    quizStatus.hidden = false;
+    quizStatus.className = "status " + kind;
+    quizStatus.textContent = text;
+  }
+
+  function clearFeedback() {
+    quizStatus.hidden = true;
+    heardLine.hidden = true;
+    hearCorrectBtn.hidden = true;
+    tryAgainBtn.hidden = true;
+    answerInput.value = "";
+    answerInput.disabled = false;
+    sayBtn.disabled = false;
+    checkBtn.disabled = false;
+  }
+
+  function showQuestion() {
+    var item = currentItem();
+    quizCard.hidden = false;
+    quizDone.hidden = true;
+    restartBtn.hidden = true;
+    quizProgress.textContent = "Question " + (idx + 1) + " of " + deck.length;
+    quizScore.textContent = "Score " + score + "/" + attempted;
+    quizPrompt.textContent = item.prompt;
+    quizListenRow.innerHTML = "";
+    scoredThis = false;
+    nextBtn.disabled = true;
+    clearFeedback();
+
+    var listenText = item.speakPrompt || item.speakAnswer || null;
+    if (listenText) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = "Listen";
+      b.addEventListener("click", function () {
+        speakSpanish(listenText);
+      });
+      quizListenRow.appendChild(b);
+    }
+    if (item.kind === "repeat" && item.speakPrompt) {
+      var b2 = document.createElement("button");
+      b2.type = "button";
+      b2.className = "btn";
+      b2.textContent = "Play again";
+      b2.addEventListener("click", function () {
+        speakSpanish(item.speakPrompt);
+      });
+      quizListenRow.appendChild(b2);
+    }
+  }
+
+  function finishAnswer(spokenOrTyped) {
+    var item = currentItem();
+    var correct = isMatch(item.answer, spokenOrTyped, item.accept);
+    if (!scoredThis) {
+      scoredThis = true;
+      attempted += 1;
+      if (correct) score += 1;
+      quizScore.textContent = "Score " + score + "/" + attempted;
+    }
+    nextBtn.disabled = false;
+    sayBtn.disabled = true;
+    checkBtn.disabled = true;
+    answerInput.disabled = true;
+    hearCorrectBtn.hidden = false;
+    tryAgainBtn.hidden = false;
+
+    if (correct) {
+      setStatus("ok", "¡Muy bien! That's right. Great job!");
+    } else if (rejectsUnoForPrimero(item.answer, spokenOrTyped)) {
+      setStatus("warn", "Close! For the 1st we say el primero, not el uno. Listen to the correct answer.");
+      speakSpanish(item.speakAnswer || item.answer);
+    } else {
+      var tip = item.why ? " " + item.why : "";
+      setStatus("bad", "Not quite. The answer is: " + item.answer + "." + tip);
+      speakSpanish(item.speakAnswer || item.answer);
+    }
+  }
+
+  function getRecognitionCtor() {
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  }
+
+  function startListening() {
+    var Ctor = getRecognitionCtor();
+    if (!Ctor) {
+      setStatus(
+        "warn",
+        "Speech recognition is not supported in this browser. Please open this file in Google Chrome (or Edge/Safari), or type your answer below."
+      );
+      return;
+    }
+    if (listening) return;
+
+    try {
+      if (activeRec) {
+        try { activeRec.stop(); } catch (e1) {}
+      }
+      var rec = new Ctor();
+      activeRec = rec;
+      rec.lang = "es-ES";
+      rec.interimResults = false;
+      rec.maxAlternatives = 3;
+      rec.continuous = false;
+
+      setStatus("info", "Listening… say it now. Allow the microphone if Chrome asks.");
+      listening = true;
+      sayBtn.textContent = "Listening…";
+      sayBtn.disabled = true;
+
+      rec.onresult = function (e) {
+        var alts = [];
+        var first = e.results[0];
+        var i;
+        for (i = 0; i < first.length; i++) alts.push(first[i].transcript);
+        var item = currentItem();
+        var best = alts[0] || "";
+        var bestScore = 0;
+        alts.forEach(function (a) {
+          var s = similarity(item.answer, a);
+          var accept = item.accept || [];
+          var k;
+          for (k = 0; k < accept.length; k++) {
+            s = Math.max(s, similarity(accept[k], a));
+          }
+          if (s > bestScore) {
+            bestScore = s;
+            best = a;
+          }
+        });
+        heardLine.hidden = false;
+        heardLine.textContent = "I heard: «" + best + "»";
+        answerInput.value = best;
+        finishAnswer(best);
+      };
+
+      rec.onerror = function (e) {
+        listening = false;
+        sayBtn.textContent = "Say it";
+        sayBtn.disabled = scoredThis;
+        var err = (e && e.error) || "";
+        if (err === "not-allowed") {
+          setStatus(
+            "warn",
+            "Microphone permission was denied. Click the lock/camera icon in the address bar, allow the mic, then try Say it again — or type your answer."
+          );
+        } else if (err === "no-speech") {
+          setStatus("warn", "I didn't hear anything. Try again a little louder, or type your answer.");
+        } else if (err === "network") {
+          setStatus(
+            "warn",
+            "Network error. Chrome's speech recognition needs internet. Check your connection, or type your answer."
+          );
+        } else if (err === "aborted") {
+          setStatus("info", "Listening stopped. Tap Say it to try again.");
+        } else {
+          setStatus("warn", "Couldn't hear that (" + err + "). Try again, or type your answer.");
+        }
+      };
+
+      rec.onend = function () {
+        listening = false;
+        sayBtn.textContent = "Say it";
+        if (!scoredThis) sayBtn.disabled = false;
+      };
+
+      /* First click requests mic permission so Chrome can prompt. */
+      rec.start();
+    } catch (err) {
+      listening = false;
+      sayBtn.textContent = "Say it";
+      sayBtn.disabled = false;
+      setStatus(
+        "warn",
+        "Could not start the microphone. Open this file in Chrome and allow mic access, or type your answer."
+      );
+    }
+  }
+
+  sayBtn.addEventListener("click", function () {
+    if (scoredThis) return;
+    startListening();
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (scoredThis) return;
+    var v = answerInput.value;
+    if (!clean(v)) {
+      setStatus("warn", "Type an answer first, or tap Say it.");
+      return;
+    }
+    finishAnswer(v);
+  });
+
+  answerInput.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      if (!scoredThis) checkBtn.click();
+    }
+  });
+
+  hearCorrectBtn.addEventListener("click", function () {
+    var item = currentItem();
+    speakSpanish(item.speakAnswer || item.answer);
+  });
+
+  tryAgainBtn.addEventListener("click", function () {
+    scoredThis = false;
+    nextBtn.disabled = true;
+    clearFeedback();
+  });
+
+  function goNext() {
+    if (idx + 1 >= deck.length) {
+      quizCard.hidden = true;
+      quizDone.hidden = false;
+      quizDoneMsg.textContent =
+        "Finished! You got " + score + " out of " + attempted + " correct. ¡Buen trabajo!";
+      return;
+    }
+    idx += 1;
+    showQuestion();
+  }
+
+  function restart() {
+    deck = shuffle(buildQuiz());
+    idx = 0;
+    score = 0;
+    attempted = 0;
+    scoredThis = false;
+    showQuestion();
+  }
+
+  nextBtn.addEventListener("click", goNext);
+  restartBtn.addEventListener("click", restart);
+  restartBtn2.addEventListener("click", restart);
+
+  showQuestion();
+})();
+  </script>
+</body>
+</html>
